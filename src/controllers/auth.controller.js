@@ -1,6 +1,8 @@
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
-import { createToken } from '../libs/jwt.js';
+import jwt from 'jsonwebtoken';
+import { SECRET_TOKEN } from "../config.js";
+import { createToken } from "../libs/jwt.js";
 
 export const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -14,7 +16,7 @@ export const register = async (req, res) => {
         // Comprueba si el usuario ya existe en la base de datos
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json(["El correo electrónico ya está registrado usa otro."]);
+            return res.status(400).json(["Este correo electrónico ya está en uso, proporciona uno diferente."]);
         }
 
         // Hash de la contraseña
@@ -67,7 +69,11 @@ export const login = async (req, res) => {
         const token = await createToken({ id: userFound._id });
 
         // Enviar respuesta con el token y los detalles del usuario
-        res.cookie('token', token);
+        res.cookie('token', token, {
+            sameSite: 'none',
+            secure: true,
+            httpOnly: false
+        });
         res.json({
             token,
             user: {
@@ -104,4 +110,25 @@ export const profile = async (req, res) => {
         createdAt: userFound.createdAt,
         updatedAt: userFound.updatedAt,
     })
+}
+
+export const verifyToken= async (req, res) => {
+    const {token } = req.cookies;
+    if (!token) return res.sendStatus(401).json({message: 'Acceso no autorizado'});
+
+    jwt.verify(token, SECRET_TOKEN, (err, user) => {
+        if (err) return res.sendStatus(401).json({message: 'Acceso no autorizado'});
+        const userFound = User.findById(user.id);
+        if(!userFound) return res.sendStatus(401).json({message: 'Acceso no autorizado'});
+
+        return(res.json({
+                id: userFound._id,
+                username: userFound.username,
+                email: userFound.email,
+                createdAt: userFound.createdAt,
+                updatedAt: userFound.updatedAt,
+            })
+        );
+    }); 
+
 }

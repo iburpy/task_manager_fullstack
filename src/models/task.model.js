@@ -13,7 +13,7 @@ const taskSchema = new mongoose.Schema({
    },
 
    date: {
-       type: Date,
+       type: String,
        default: Date.now
    }, 
    user:{
@@ -24,6 +24,8 @@ const taskSchema = new mongoose.Schema({
 }, 
 {
     timestamps: true,
+    versionKey: false,
+    _id: true,
 });
 
 export default mongoose.model("Task", taskSchema);

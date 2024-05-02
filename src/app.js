@@ -9,7 +9,10 @@ import cors from 'cors';
 const app = express();
 
 // Middleware para habilitar CORS
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ 
+    credentials: true, 
+    origin: 'http://localhost:5173' 
+}));
 
 // Middleware para registrar solicitudes HTTP en la consola (en modo desarrollo)
 app.use(morgan('dev'));

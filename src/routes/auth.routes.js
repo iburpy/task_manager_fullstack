@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { login, register, logout, profile } from '../controllers/auth.controller.js';
+import {
+        login,
+        register,
+        logout,
+        profile,
+        verifyToken } from '../controllers/auth.controller.js';
 import { authRequired } from "../middlewares/validateToken.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
@@ -13,5 +18,6 @@ router.post('/logout', logout);  // Cierre de sesión
 
 // Ruta protegida para obtener el perfil del usuario
 router.get('/profile', authRequired, profile);
+router.get('/verify', verifyToken)
 
 export default router;
