@@ -101,7 +101,6 @@ El frontend está construido con React y utiliza Vite como herramienta de constr
 
 •	Carpeta ‘API’: Contiene archivos para las peticiones al backend.
 
-•	styles/: Archivos de estilos, utilizando Tailwind CSS para el diseño.
 
 ### Dependencias Utilizadas
 •	React: Biblioteca para construir interfaces de usuario.
